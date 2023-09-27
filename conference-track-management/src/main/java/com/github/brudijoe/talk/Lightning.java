@@ -10,4 +10,8 @@ public class Lightning extends Talk {
     public Lightning(String name) {
         super(name, LIGHTNING_DURATION);
     }
+
+    public static int getLightningDuration() {
+        return LIGHTNING_DURATION;
+    }
 }

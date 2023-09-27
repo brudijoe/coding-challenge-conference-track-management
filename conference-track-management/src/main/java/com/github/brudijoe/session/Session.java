@@ -32,9 +32,16 @@ public class Session {
         talks.add(talk);
     }
 
-    @Override
-    public String toString() {
-        return "{" + " talks='" + getTalks() + "'" + "}";
+    public HashSet<Talk> sortTalksIntoSession(HashSet<Talk> hashSet) {
+        printSession(hashSet);
+        return hashSet;
+    }
+
+    public void printSession(HashSet<Talk> hashSet) {
+        for (Talk talk : hashSet) {
+            System.out.println("Talk Title: " + talk.getName() + ", Duration: " + talk.getDuration()
+                    + " minutes");
+        }
     }
 
 }

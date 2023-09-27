@@ -1,22 +1,22 @@
-package com.github.brudijoe;
+package com.github.brudijoe.session;
 
-import java.util.HashSet;
-import com.github.brudijoe.session.Session;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.github.brudijoe.talk.Lightning;
 import com.github.brudijoe.talk.Talk;
 
-/**
- * Main class.
- */
-public final class ConferenceTrackManagement {
+public class SessionTest {
 
-    private ConferenceTrackManagement() {}
+    Session session;
 
-    /**
-     * The main method of the application.
-     */
-    public static void main(String[] args) {
-        Session session = new Session();
+    @BeforeEach
+    public void setUp() {
+        session = new Session();
+    }
+
+    @Test
+    public void testSortTalksIntoSession() {
 
         // Create some Talk objects
         Talk talk1 = new Talk("Writing Fast Tests Against Enterprise Rails", 60);
@@ -62,10 +62,6 @@ public final class ConferenceTrackManagement {
         session.addTalk(talk18);
         session.addTalk(lightning1);
 
-        // Retrieve the talks from the session
-        HashSet<Talk> sessionTalks = session.getTalks();
-
-        // Print the talks
-        session.sortTalksIntoSession(sessionTalks);
+        assertEquals("todo", "");
     }
 }
