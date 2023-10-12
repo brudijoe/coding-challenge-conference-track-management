@@ -5,12 +5,25 @@ package com.github.brudijoe.talk;
  */
 public class Talk {
 
+    private String startTime;
     private String name;
     private int duration;
 
-    public Talk(String name, int duration) {
+
+    public Talk() {}
+
+    public Talk(String startTime, String name, int duration) {
+        this.startTime = startTime;
         this.name = name;
         this.duration = duration;
+    }
+
+    public String getStartTime() {
+        return this.startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public String getName() {
@@ -31,7 +44,7 @@ public class Talk {
 
     @Override
     public String toString() {
-        return "{" + " name='" + getName() + "'" + ", duration='" + getDuration() + "'" + "}";
+        return getName() + " " + getDuration() + "min";
     }
 
 }

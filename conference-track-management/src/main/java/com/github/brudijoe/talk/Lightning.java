@@ -7,8 +7,8 @@ public class Lightning extends Talk {
 
     private static final int LIGHTNING_DURATION = 5;
 
-    public Lightning(String name) {
-        super(name, LIGHTNING_DURATION);
+    public Lightning(String startTime, String name) {
+        super(startTime, name, LIGHTNING_DURATION);
     }
 
     public static int getLightningDuration() {

@@ -1,6 +1,6 @@
 package com.github.brudijoe.session;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import com.github.brudijoe.talk.Talk;
 
 /**
@@ -8,40 +8,73 @@ import com.github.brudijoe.talk.Talk;
  */
 public class Session {
 
-    private static final int SESSION_DURATION = 300;
-    private HashSet<Talk> talks;
+    private ArrayList<Talk> talks;
+    private int totalDuration;
+    private int duration;
+    private int startTime;
+    private int endTime;
 
-    public Session() {
-        talks = new HashSet<Talk>();
+    public Session(int totalDuration, int duration, int startTime, int endTime) {
+        this.talks = new ArrayList<Talk>();
+        this.totalDuration = totalDuration;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-
-    public HashSet<Talk> getTalks() {
+    public ArrayList<Talk> getTalks() {
         return this.talks;
     }
 
-    public void setTalks(HashSet<Talk> talks) {
-        this.talks = talks;
+    public String formatStartTime(int morningSessionHours, int morningSessionMinutes) {
+        String format = "%02d:%02dAM";
+        return String.format(format, morningSessionHours, morningSessionMinutes);
     }
 
-    public static int getSessionDuration() {
-        return SESSION_DURATION;
+    public String getFormattedStartTime(int startTime) {
+        int morningSessionHours = startTime / 60;
+        int morningSessionMinutes = startTime % 60;
+        return formatStartTime(morningSessionHours, morningSessionMinutes);
     }
 
     public void addTalk(Talk talk) {
         talks.add(talk);
     }
 
-    public HashSet<Talk> sortTalksIntoSession(HashSet<Talk> hashSet) {
-        printSession(hashSet);
-        return hashSet;
+    public void setTalks(ArrayList<Talk> talks) {
+        this.talks = talks;
     }
 
-    public void printSession(HashSet<Talk> hashSet) {
-        for (Talk talk : hashSet) {
-            System.out.println("Talk Title: " + talk.getName() + ", Duration: " + talk.getDuration()
-                    + " minutes");
-        }
+    public int getTotalDuration() {
+        return this.totalDuration;
+    }
+
+    public void setTotalDuration(int totalDuration) {
+        this.totalDuration = totalDuration;
+    }
+
+    public int getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getStartTime() {
+        return this.startTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getEndTime() {
+        return this.endTime;
+    }
+
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
     }
 
 }

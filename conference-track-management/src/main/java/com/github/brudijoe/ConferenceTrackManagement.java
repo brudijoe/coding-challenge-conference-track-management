@@ -1,71 +1,124 @@
 package com.github.brudijoe;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.github.brudijoe.conference.Conference;
 import com.github.brudijoe.session.Session;
-import com.github.brudijoe.talk.Lightning;
 import com.github.brudijoe.talk.Talk;
+import com.github.brudijoe.track.Track;
 
 /**
  * Main class.
  */
 public final class ConferenceTrackManagement {
 
-    private ConferenceTrackManagement() {}
-
     /**
      * The main method of the application.
      */
     public static void main(String[] args) {
-        Session session = new Session();
 
-        // Create some Talk objects
-        Talk talk1 = new Talk("Writing Fast Tests Against Enterprise Rails", 60);
-        Talk talk2 = new Talk("Overdoing it in Python", 45);
-        Talk talk3 = new Talk("Lua for the Masses", 30);
-        Talk talk4 = new Talk("Ruby Errors from Mismatched Gem Versions", 45);
-        Talk talk5 = new Talk("Common Ruby Errors", 45);
-        Talk talk6 = new Talk("Communicating Over Distance", 60);
-        Talk talk7 = new Talk("Accounting-Driven Development", 45);
-        Talk talk8 = new Talk("Woah", 30);
-        Talk talk9 = new Talk("Sit Down and Write", 30);
-        Talk talk10 = new Talk("Pair Programming vs Noise", 45);
-        Talk talk11 = new Talk("Rails Magic", 60);
-        Talk talk12 = new Talk("Ruby on Rails: Why We Should Move On", 60);
-        Talk talk13 = new Talk("Clojure Ate Scala (on my project)", 45);
-        Talk talk14 = new Talk("Programming in the Boondocks of Seattle", 30);
-        Talk talk15 = new Talk("Ruby vs. Clojure for Back-End Development", 30);
-        Talk talk16 = new Talk("Ruby on Rails Legacy App Maintenance", 60);
-        Talk talk17 = new Talk("A World Without HackerNews", 30);
-        Talk talk18 = new Talk("User Interface CSS in Rails Apps", 30);
+        Conference conference = new Conference();
+        Session morningSession = new Session(180, 180, 540, 540);
+        Session afternoonSession = new Session(240, 240, 60, 60);
 
-        // Create Lightning talk
-        Lightning lightning1 = new Lightning("Rails for Python Developers");
+        Scanner scanner = new Scanner(System.in);
 
-        // Add talks to the session
-        session.addTalk(talk1);
-        session.addTalk(talk2);
-        session.addTalk(talk3);
-        session.addTalk(talk4);
-        session.addTalk(talk5);
-        session.addTalk(talk6);
-        session.addTalk(talk7);
-        session.addTalk(talk8);
-        session.addTalk(talk9);
-        session.addTalk(talk10);
-        session.addTalk(talk11);
-        session.addTalk(talk12);
-        session.addTalk(talk13);
-        session.addTalk(talk14);
-        session.addTalk(talk15);
-        session.addTalk(talk16);
-        session.addTalk(talk17);
-        session.addTalk(talk18);
-        session.addTalk(lightning1);
+        while (true) {
+            System.out.print(
+                    "Enter talk details e.g., 'Writing Fast Tests Against Enterprise Rails 60min' (or 'exit' to finish): ");
+            System.out.println();
+            String input = scanner.nextLine();
 
-        // Retrieve the talks from the session
-        HashSet<Talk> sessionTalks = session.getTalks();
+            if (input.equalsIgnoreCase("exit")) {
+                morningSession.addTalk(new Talk("12:00PM", "Lunch", 60));
+                String formattedAfternoonSessionStartTime =
+                        afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
+                // Networking Event only starts at 04:00PM
+                if (afternoonSession.getDuration() <= afternoonSession.getTotalDuration() - 60) {
+                    afternoonSession.addTalk(
+                            new Talk(formattedAfternoonSessionStartTime, "Networking Event", 0));
+                }
+                Track track = new Track(morningSession, afternoonSession);
+                conference.addTrack(track);
+                conference.printConference();
+                break;
+            }
 
-        // Print the talks
-        session.sortTalksIntoSession(sessionTalks);
+            Pattern pattern = Pattern.compile("(\\D+)(\\s)(\\d+)");
+            Matcher matcher = pattern.matcher(input);
+
+            if (matcher.find()) {
+
+                String talkName = matcher.group(1);
+                int duration = Integer.parseInt(matcher.group(3));
+
+                if (duration > afternoonSession.getTotalDuration()) {
+                    System.out.println("Error: Duration to large!");
+                    break;
+                }
+
+                if (duration <= morningSession.getDuration()) {
+                    morningSession.setDuration(morningSession.getDuration() - duration);
+                    morningSession.setEndTime(morningSession.getStartTime() + duration);
+
+                    String formattedMorningSessionStartTime =
+                            morningSession.getFormattedStartTime(morningSession.getStartTime());
+                    Talk morningSessionTalk =
+                            new Talk(formattedMorningSessionStartTime, talkName, duration);
+                    morningSession.addTalk(morningSessionTalk);
+
+                    morningSession.setStartTime(morningSession.getEndTime());
+                } else if (duration <= afternoonSession.getDuration()) {
+                    afternoonSession.setDuration(afternoonSession.getDuration() - duration);
+                    afternoonSession.setEndTime(afternoonSession.getEndTime() + duration);
+
+                    String formattedAfternoonSessionStartTime =
+                            afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
+                    Talk afternoonSessionTalk =
+                            new Talk(formattedAfternoonSessionStartTime, talkName, duration);
+                    afternoonSession.addTalk(afternoonSessionTalk);
+
+                    afternoonSession.setStartTime(afternoonSession.getEndTime());
+                } else if (duration > morningSession.getDuration()
+                        && duration > afternoonSession.getDuration()) {
+
+                    // Add Lunch und Networking event
+                    morningSession.addTalk(new Talk("12:00PM", "Lunch", 60));
+                    String formattedAfternoonSessionStartTime =
+                            afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
+                    afternoonSession.addTalk(
+                            new Talk(formattedAfternoonSessionStartTime, "Networking Event", 0));
+
+                    // Close session
+                    Track track = new Track(morningSession, afternoonSession);
+                    conference.addTrack(track);
+                    morningSession = new Session(180, 180, 540, 540);
+                    afternoonSession = new Session(240, 240, 60, 60);
+
+                    morningSession.setEndTime(morningSession.getStartTime() + duration);
+
+                    // Begin session with current talk
+                    Talk morningSessionTalk = new Talk("09:00AM", talkName, duration);
+                    morningSession.addTalk(morningSessionTalk);
+
+                    morningSession.setStartTime(morningSession.getEndTime());
+
+                    if (duration > morningSession.getTotalDuration()) {
+                        System.out.println("Error: Duration to large for morning session!");
+                        break;
+                    }
+
+                    morningSession.setDuration(morningSession.getDuration() - duration);
+                }
+
+            } else {
+                System.out.println(
+                        "Invalid input format. Please enter talk details in the correct format.");
+            }
+
+        }
+        scanner.close();
     }
 }
