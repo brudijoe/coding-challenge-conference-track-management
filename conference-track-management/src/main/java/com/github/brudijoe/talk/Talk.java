@@ -9,9 +9,9 @@ public class Talk {
     private String name;
     private int duration;
 
-
-    public Talk() {}
-
+    /**
+     * Constructor for talk.
+     */
     public Talk(String startTime, String name, int duration) {
         this.startTime = startTime;
         this.name = name;

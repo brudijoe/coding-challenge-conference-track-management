@@ -1,13 +1,19 @@
 package com.github.brudijoe.conference;
 
-import java.util.ArrayList;
 import com.github.brudijoe.talk.Talk;
 import com.github.brudijoe.track.Track;
+import java.util.ArrayList;
 
+/**
+ * Conference class.
+ */
 public class Conference {
 
     private ArrayList<Track> tracks;
 
+    /**
+     * Constructor for conference.
+     */
     public Conference() {
         this.tracks = new ArrayList<Track>();
     }
@@ -24,11 +30,14 @@ public class Conference {
         this.tracks = tracks;
     }
 
+    /**
+     * Print out conference, dependent on the given tracks.
+     */
     public void printConference() {
         for (int i = 0; i < tracks.size(); i++) {
             System.out.println("Track " + (i + 1) + ":");
             for (Talk track : tracks.get(i).getMorningSession().getTalks()) {
-                if (track.getName() == "Lunch") {
+                if (track.getName().equals("Lunch")) {
                     System.out.println(track.getStartTime() + " " + track.getName());
                 } else {
                     System.out.println(track.getStartTime() + " " + track.getName() + " "
@@ -37,7 +46,7 @@ public class Conference {
             }
 
             for (Talk track : tracks.get(i).getAfternoonSession().getTalks()) {
-                if (track.getName() == "Networking Event") {
+                if (track.getName().equals("Networking Event")) {
                     System.out.println(track.getStartTime() + " " + track.getName());
                 } else {
                     System.out.println(track.getStartTime() + " " + track.getName() + " "

@@ -1,18 +1,20 @@
 package com.github.brudijoe;
 
-import java.util.ArrayList;
+import com.github.brudijoe.conference.Conference;
+import com.github.brudijoe.session.AfternoonSession;
+import com.github.brudijoe.session.MorningSession;
+import com.github.brudijoe.talk.Talk;
+import com.github.brudijoe.track.Track;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.github.brudijoe.conference.Conference;
-import com.github.brudijoe.session.Session;
-import com.github.brudijoe.talk.Talk;
-import com.github.brudijoe.track.Track;
 
 /**
  * Main class.
  */
 public final class ConferenceTrackManagement {
+
+    private ConferenceTrackManagement() {}
 
     /**
      * The main method of the application.
@@ -20,26 +22,23 @@ public final class ConferenceTrackManagement {
     public static void main(String[] args) {
 
         Conference conference = new Conference();
-        Session morningSession = new Session(180, 180, 540, 540);
-        Session afternoonSession = new Session(240, 240, 60, 60);
+        MorningSession morningSession = new MorningSession();
+        AfternoonSession afternoonSession = new AfternoonSession();
 
         Scanner scanner = new Scanner(System.in);
 
+        final int matchGroupString = 1;
+        final int matchGroupDuration = 3;
+
         while (true) {
             System.out.print(
-                    "Enter talk details e.g., 'Writing Fast Tests Against Enterprise Rails 60min' (or 'exit' to finish): ");
+                    "Enter talk e.g., 'Writing Fast Tests Against Enterprise Rails 60min' (or 'exit' to finish): ");
             System.out.println();
             String input = scanner.nextLine();
 
-            if (input.equalsIgnoreCase("exit")) {
-                morningSession.addTalk(new Talk("12:00PM", "Lunch", 60));
-                String formattedAfternoonSessionStartTime =
-                        afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
-                // Networking Event only starts at 04:00PM
-                if (afternoonSession.getDuration() <= afternoonSession.getTotalDuration() - 60) {
-                    afternoonSession.addTalk(
-                            new Talk(formattedAfternoonSessionStartTime, "Networking Event", 0));
-                }
+            if ("exit".equalsIgnoreCase(input)) {
+                morningSession.addLunch();
+                afternoonSession.addNetworkingEvent();
                 Track track = new Track(morningSession, afternoonSession);
                 conference.addTrack(track);
                 conference.printConference();
@@ -51,8 +50,8 @@ public final class ConferenceTrackManagement {
 
             if (matcher.find()) {
 
-                String talkName = matcher.group(1);
-                int duration = Integer.parseInt(matcher.group(3));
+                String talkName = matcher.group(matchGroupString);
+                int duration = Integer.parseInt(matcher.group(matchGroupDuration));
 
                 if (duration > afternoonSession.getTotalDuration()) {
                     System.out.println("Error: Duration to large!");
@@ -64,7 +63,7 @@ public final class ConferenceTrackManagement {
                     morningSession.setEndTime(morningSession.getStartTime() + duration);
 
                     String formattedMorningSessionStartTime =
-                            morningSession.getFormattedStartTime(morningSession.getStartTime());
+                            morningSession.getFormattedStartTime();
                     Talk morningSessionTalk =
                             new Talk(formattedMorningSessionStartTime, talkName, duration);
                     morningSession.addTalk(morningSessionTalk);
@@ -75,7 +74,7 @@ public final class ConferenceTrackManagement {
                     afternoonSession.setEndTime(afternoonSession.getEndTime() + duration);
 
                     String formattedAfternoonSessionStartTime =
-                            afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
+                            afternoonSession.getFormattedStartTime();
                     Talk afternoonSessionTalk =
                             new Talk(formattedAfternoonSessionStartTime, talkName, duration);
                     afternoonSession.addTalk(afternoonSessionTalk);
@@ -85,17 +84,14 @@ public final class ConferenceTrackManagement {
                         && duration > afternoonSession.getDuration()) {
 
                     // Add Lunch und Networking event
-                    morningSession.addTalk(new Talk("12:00PM", "Lunch", 60));
-                    String formattedAfternoonSessionStartTime =
-                            afternoonSession.getFormattedStartTime(afternoonSession.getStartTime());
-                    afternoonSession.addTalk(
-                            new Talk(formattedAfternoonSessionStartTime, "Networking Event", 0));
+                    morningSession.addLunch();
+                    afternoonSession.addNetworkingEvent();
 
                     // Close session
                     Track track = new Track(morningSession, afternoonSession);
                     conference.addTrack(track);
-                    morningSession = new Session(180, 180, 540, 540);
-                    afternoonSession = new Session(240, 240, 60, 60);
+                    morningSession = new MorningSession();
+                    afternoonSession = new AfternoonSession();
 
                     morningSession.setEndTime(morningSession.getStartTime() + duration);
 

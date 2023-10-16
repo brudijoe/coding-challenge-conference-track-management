@@ -1,33 +1,37 @@
 package com.github.brudijoe.track;
 
-import com.github.brudijoe.session.Session;
+import com.github.brudijoe.session.AfternoonSession;
+import com.github.brudijoe.session.MorningSession;
 
 /**
  * Track class.
  */
 public class Track {
 
-    private Session morningSession;
-    private Session afternoonSession;
+    private MorningSession morningSession;
+    private AfternoonSession afternoonSession;
 
-    public Track(Session morningSession, Session afternoonSession) {
+    /**
+     * Contructor that takes a morning session and afternoon session.
+     */
+    public Track(MorningSession morningSession, AfternoonSession afternoonSession) {
         this.morningSession = morningSession;
         this.afternoonSession = afternoonSession;
     }
 
-    public Session getMorningSession() {
+    public MorningSession getMorningSession() {
         return this.morningSession;
     }
 
-    public void setMorningSession(Session morningSession) {
+    public void setMorningSession(MorningSession morningSession) {
         this.morningSession = morningSession;
     }
 
-    public Session getAfternoonSession() {
+    public AfternoonSession getAfternoonSession() {
         return this.afternoonSession;
     }
 
-    public void setAfternoonSession(Session afternoonSession) {
+    public void setAfternoonSession(AfternoonSession afternoonSession) {
         this.afternoonSession = afternoonSession;
     }
 
@@ -36,6 +40,5 @@ public class Track {
         return "{" + " morningSession='" + getMorningSession() + "'" + ", afternoonSession='"
                 + getAfternoonSession() + "'" + "}";
     }
-
 
 }

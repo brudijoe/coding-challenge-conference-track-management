@@ -1,7 +1,7 @@
 package com.github.brudijoe.session;
 
-import java.util.ArrayList;
 import com.github.brudijoe.talk.Talk;
+import java.util.ArrayList;
 
 /**
  * Session class.
@@ -13,7 +13,16 @@ public class Session {
     private int duration;
     private int startTime;
     private int endTime;
+    private final int minutesInAnHour = 60;
 
+    /**
+     * Constructor for session.
+     *
+     * @param totalDuration The total duration of the session in minutes.
+     * @param duration The duration of the session in minutes.
+     * @param startTime The start time of the session in minutes.
+     * @param endTime The end time of the session in minutes.
+     */
     public Session(int totalDuration, int duration, int startTime, int endTime) {
         this.talks = new ArrayList<Talk>();
         this.totalDuration = totalDuration;
@@ -26,14 +35,26 @@ public class Session {
         return this.talks;
     }
 
+    /**
+     * Format a string that match the requirements.
+     *
+     * @param morningSessionHours The starting hour in hours.
+     * @param morningSessionMinutes The starting minutes in minutes.
+     * @return A formatted string e.g. 09:00AM.
+     */
     public String formatStartTime(int morningSessionHours, int morningSessionMinutes) {
         String format = "%02d:%02dAM";
         return String.format(format, morningSessionHours, morningSessionMinutes);
     }
 
-    public String getFormattedStartTime(int startTime) {
-        int morningSessionHours = startTime / 60;
-        int morningSessionMinutes = startTime % 60;
+    /**
+     * Format a string, dependent on the given start time.
+     *
+     * @return A formatted string.
+     */
+    public String getFormattedStartTime() {
+        int morningSessionHours = getStartTime() / minutesInAnHour;
+        int morningSessionMinutes = getStartTime() % minutesInAnHour;
         return formatStartTime(morningSessionHours, morningSessionMinutes);
     }
 
