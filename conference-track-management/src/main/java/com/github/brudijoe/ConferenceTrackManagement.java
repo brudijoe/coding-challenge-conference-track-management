@@ -30,7 +30,8 @@ public final class ConferenceTrackManagement {
         final int matchGroupString = 1;
         final int matchGroupDuration = 3;
 
-        while (true) {
+        boolean planning = true;
+        while (planning) {
             System.out.print(
                     "Enter talk e.g., 'Writing Fast Tests Against Enterprise Rails 60min' (or 'exit' to finish): ");
             System.out.println();
@@ -48,70 +49,67 @@ public final class ConferenceTrackManagement {
             Pattern pattern = Pattern.compile("(\\D+)(\\s)(\\d+)");
             Matcher matcher = pattern.matcher(input);
 
-            if (matcher.find()) {
-
-                String talkName = matcher.group(matchGroupString);
-                int duration = Integer.parseInt(matcher.group(matchGroupDuration));
-
-                if (duration > afternoonSession.getTotalDuration()) {
-                    System.out.println("Error: Duration to large!");
-                    break;
-                }
-
-                if (duration <= morningSession.getDuration()) {
-                    morningSession.setDuration(morningSession.getDuration() - duration);
-                    morningSession.setEndTime(morningSession.getStartTime() + duration);
-
-                    String formattedMorningSessionStartTime =
-                            morningSession.getFormattedStartTime();
-                    Talk morningSessionTalk =
-                            new Talk(formattedMorningSessionStartTime, talkName, duration);
-                    morningSession.addTalk(morningSessionTalk);
-
-                    morningSession.setStartTime(morningSession.getEndTime());
-                } else if (duration <= afternoonSession.getDuration()) {
-                    afternoonSession.setDuration(afternoonSession.getDuration() - duration);
-                    afternoonSession.setEndTime(afternoonSession.getEndTime() + duration);
-
-                    String formattedAfternoonSessionStartTime =
-                            afternoonSession.getFormattedStartTime();
-                    Talk afternoonSessionTalk =
-                            new Talk(formattedAfternoonSessionStartTime, talkName, duration);
-                    afternoonSession.addTalk(afternoonSessionTalk);
-
-                    afternoonSession.setStartTime(afternoonSession.getEndTime());
-                } else if (duration > morningSession.getDuration()
-                        && duration > afternoonSession.getDuration()) {
-
-                    // Add Lunch und Networking event
-                    morningSession.addLunch();
-                    afternoonSession.addNetworkingEvent();
-
-                    // Close session
-                    Track track = new Track(morningSession, afternoonSession);
-                    conference.addTrack(track);
-                    morningSession = new MorningSession();
-                    afternoonSession = new AfternoonSession();
-
-                    morningSession.setEndTime(morningSession.getStartTime() + duration);
-
-                    // Begin session with current talk
-                    Talk morningSessionTalk = new Talk("09:00AM", talkName, duration);
-                    morningSession.addTalk(morningSessionTalk);
-
-                    morningSession.setStartTime(morningSession.getEndTime());
-
-                    if (duration > morningSession.getTotalDuration()) {
-                        System.out.println("Error: Duration to large for morning session!");
-                        break;
-                    }
-
-                    morningSession.setDuration(morningSession.getDuration() - duration);
-                }
-
-            } else {
+            if (!matcher.find()) {
                 System.out.println(
                         "Invalid input format. Please enter talk details in the correct format.");
+            }
+
+            String talkName = matcher.group(matchGroupString);
+            int duration = Integer.parseInt(matcher.group(matchGroupDuration));
+
+            if (duration > afternoonSession.getTotalDuration()) {
+                System.out.println("Error: Duration to large!");
+                planning = false;
+            }
+
+            if (duration <= morningSession.getDuration()) {
+                morningSession.setDuration(morningSession.getDuration() - duration);
+                morningSession.setEndTime(morningSession.getStartTime() + duration);
+
+                String formattedMorningSessionStartTime = morningSession.getFormattedStartTime();
+                Talk morningSessionTalk =
+                        new Talk(formattedMorningSessionStartTime, talkName, duration);
+                morningSession.addTalk(morningSessionTalk);
+
+                morningSession.setStartTime(morningSession.getEndTime());
+            } else if (duration <= afternoonSession.getDuration()) {
+                afternoonSession.setDuration(afternoonSession.getDuration() - duration);
+                afternoonSession.setEndTime(afternoonSession.getEndTime() + duration);
+
+                String formattedAfternoonSessionStartTime =
+                        afternoonSession.getFormattedStartTime();
+                Talk afternoonSessionTalk =
+                        new Talk(formattedAfternoonSessionStartTime, talkName, duration);
+                afternoonSession.addTalk(afternoonSessionTalk);
+
+                afternoonSession.setStartTime(afternoonSession.getEndTime());
+            } else if (duration > morningSession.getDuration()
+                    && duration > afternoonSession.getDuration()) {
+
+                // Add Lunch und Networking event
+                morningSession.addLunch();
+                afternoonSession.addNetworkingEvent();
+
+                // Close session
+                Track track = new Track(morningSession, afternoonSession);
+                conference.addTrack(track);
+                morningSession = new MorningSession();
+                afternoonSession = new AfternoonSession();
+
+                morningSession.setEndTime(morningSession.getStartTime() + duration);
+
+                // Begin session with current talk
+                Talk morningSessionTalk = new Talk("09:00AM", talkName, duration);
+                morningSession.addTalk(morningSessionTalk);
+
+                morningSession.setStartTime(morningSession.getEndTime());
+
+                if (duration > morningSession.getTotalDuration()) {
+                    System.out.println("Error: Duration to large for morning session!");
+                    planning = false;
+                }
+
+                morningSession.setDuration(morningSession.getDuration() - duration);
             }
 
         }
