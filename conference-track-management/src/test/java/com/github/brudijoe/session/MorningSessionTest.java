@@ -15,7 +15,7 @@ public class MorningSessionTest {
 
         morningSession.addLunch();
 
-        assertEquals(1, morningSession.getTalks().size());
+        assertEquals(1, morningSession.getTalks().size(), 0, "size should be 1");
     }
 
 }
