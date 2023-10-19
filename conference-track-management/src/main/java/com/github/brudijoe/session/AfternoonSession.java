@@ -26,7 +26,9 @@ public class AfternoonSession extends Session {
      * Add a networking slot after afternoon session.
      */
     public void addNetworkingEvent() {
-        String formattedAfternoonSessionStartTime = getFormattedStartTime();
+        // String formattedAfternoonSessionStartTime = getFormattedStartTime();
+        String formattedAfternoonSessionStartTime =
+                formatStartTime(calculateSessionHours(), calculateSessionMinutes());
         // Networking Event only starts at 04:00PM
         int earliestStartTime = getTotalDuration() - minutesInAnHour;
         if (getDuration() <= earliestStartTime) {

@@ -36,6 +36,24 @@ public class Session {
     }
 
     /**
+     * Converts start time minutes to hours.
+     *
+     * @return Starting time in hours.
+     */
+    public int calculateSessionHours() {
+        return getStartTime() / minutesInAnHour;
+    }
+
+    /**
+     * Calculates the minutes from a given start time in minutes.
+     *
+     * @return Minutes.
+     */
+    public int calculateSessionMinutes() {
+        return getStartTime() % minutesInAnHour;
+    }
+
+    /**
      * Format a string that match the requirements.
      *
      * @param morningSessionHours The starting hour in hours.
@@ -45,17 +63,6 @@ public class Session {
     public String formatStartTime(int morningSessionHours, int morningSessionMinutes) {
         String format = "%02d:%02dAM";
         return String.format(format, morningSessionHours, morningSessionMinutes);
-    }
-
-    /**
-     * Format a string, dependent on the given start time.
-     *
-     * @return A formatted string.
-     */
-    public String getFormattedStartTime() {
-        int morningSessionHours = getStartTime() / minutesInAnHour;
-        int morningSessionMinutes = getStartTime() % minutesInAnHour;
-        return formatStartTime(morningSessionHours, morningSessionMinutes);
     }
 
     public void addTalk(Talk talk) {

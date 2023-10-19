@@ -94,7 +94,8 @@ public final class ConferenceTrackManagement {
             int duration) {
         morningSession.setDuration(morningSession.getDuration() - duration);
         morningSession.setEndTime(morningSession.getStartTime() + duration);
-        String formattedMorningSessionStartTime = morningSession.getFormattedStartTime();
+        String formattedMorningSessionStartTime = morningSession.formatStartTime(
+                morningSession.calculateSessionHours(), morningSession.calculateSessionMinutes());
         Talk morningSessionTalk = new Talk(formattedMorningSessionStartTime, talkName, duration);
         morningSession.addTalk(morningSessionTalk);
         morningSession.setStartTime(morningSession.getEndTime());
@@ -104,7 +105,9 @@ public final class ConferenceTrackManagement {
             String talkName, int duration) {
         afternoonSession.setDuration(afternoonSession.getDuration() - duration);
         afternoonSession.setEndTime(afternoonSession.getEndTime() + duration);
-        String formattedAfternoonSessionStartTime = afternoonSession.getFormattedStartTime();
+        String formattedAfternoonSessionStartTime =
+                afternoonSession.formatStartTime(afternoonSession.calculateSessionHours(),
+                        afternoonSession.calculateSessionMinutes());
         Talk afternoonSessionTalk =
                 new Talk(formattedAfternoonSessionStartTime, talkName, duration);
         afternoonSession.addTalk(afternoonSessionTalk);
