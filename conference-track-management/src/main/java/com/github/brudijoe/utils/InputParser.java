@@ -2,44 +2,36 @@ package com.github.brudijoe.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.github.brudijoe.talk.Talk;
 
 /**
- * Parsing regex.
+ * Utility class for parsing input strings using regular expressions and extracting talk
+ * information.
  */
 public class InputParser {
 
     private Pattern pattern = Pattern.compile("(\\D+)(\\s)(\\d+)");
     private final int matchGroupString = 1;
     private final int matchGroupDuration = 3;
-    private Matcher matcher;
 
     /**
-     * Parse console input and return a matcher.
+     * Parse the input string to extract talk information.
      *
-     * @param input The given input string.
-     * @return Matcher.
+     * @param input The input string representing a talk, e.g., "Writing Fast Tests Against
+     *        Enterprise Rails 60min".
+     * @return A Talk object representing the parsed talk information, or null if the input is
+     *         invalid.
      */
-    public Matcher createInputMatcher(String input) {
-        matcher = pattern.matcher(input);
-        return matcher;
-    }
+    public Talk parseTalk(String input) {
+        Matcher matcher = pattern.matcher(input);
 
-    /**
-     * The first group is usually the name of the talk.
-     *
-     * @return The talk name.
-     */
-    public String getMatcherName() {
-        return matcher.group(matchGroupString);
-    }
-
-    /**
-     * The third group is usualy the duration of the talk.
-     *
-     * @return The talk duration.
-     */
-    public int getMatcherDuration() {
-        return Integer.parseInt(matcher.group(matchGroupDuration));
+        if (matcher.find()) {
+            String talkName = matcher.group(matchGroupString);
+            int duration = Integer.parseInt(matcher.group(matchGroupDuration));
+            return new Talk(talkName, duration);
+        } else {
+            return null; // Invalid input
+        }
     }
 
 }

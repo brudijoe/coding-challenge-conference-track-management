@@ -7,7 +7,6 @@ import com.github.brudijoe.talk.Talk;
 import com.github.brudijoe.track.Track;
 import com.github.brudijoe.utils.InputParser;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 
 /**
  * Main class.
@@ -39,27 +38,25 @@ public final class ConferenceTrackManagement {
                 break;
             }
 
-            Matcher matcher = inputParser.createInputMatcher(input);
+            Talk talk = inputParser.parseTalk(input);
 
-            if (!matcher.find()) {
+            if (talk == null) {
                 System.out.println(
                         "Invalid input format. Please enter talk details in the correct format.");
             }
 
-            String talkName = inputParser.getMatcherName();
-            int duration = inputParser.getMatcherDuration();
-
-            if (duration > afternoonSession.getTotalDuration()) {
+            if (talk.getDuration() > afternoonSession.getTotalDuration()) {
                 System.out.println("Error: Duration to large!");
                 planning = false;
             }
 
-            if (duration <= morningSession.getDuration()) {
-                handleMorningSessionTalk(morningSession, talkName, duration);
-            } else if (duration <= afternoonSession.getDuration()) {
-                handleAfternoonSessionTalk(afternoonSession, talkName, duration);
-            } else if (duration > morningSession.getDuration()
-                    && duration > afternoonSession.getDuration()) {
+
+            if (talk.getDuration() <= morningSession.getDuration()) {
+                handleMorningSessionTalk(morningSession, talk.getName(), talk.getDuration());
+            } else if (talk.getDuration() <= afternoonSession.getDuration()) {
+                handleAfternoonSessionTalk(afternoonSession, talk.getName(), talk.getDuration());
+            } else if (talk.getDuration() > morningSession.getDuration()
+                    && talk.getDuration() > afternoonSession.getDuration()) {
                 // Add Lunch und Networking event
                 morningSession.addLunch();
                 afternoonSession.addNetworkingEvent();
@@ -70,22 +67,22 @@ public final class ConferenceTrackManagement {
                 morningSession = new MorningSession();
                 afternoonSession = new AfternoonSession();
 
-                morningSession.setEndTime(morningSession.getStartTime() + duration);
+                morningSession.setEndTime(morningSession.getStartTime() + talk.getDuration());
 
                 // Begin session with current talk
-                Talk morningSessionTalk = new Talk("09:00AM", talkName, duration);
+                Talk morningSessionTalk = new Talk("09:00AM", talk.getName(), talk.getDuration());
                 morningSession.addTalk(morningSessionTalk);
 
                 morningSession.setStartTime(morningSession.getEndTime());
 
-                if (duration > morningSession.getTotalDuration()) {
+                if (talk.getDuration() > morningSession.getTotalDuration()) {
                     System.out.println("Error: Duration to large for morning session!");
                     planning = false;
                 }
 
-                morningSession.setDuration(morningSession.getDuration() - duration);
-            }
+                morningSession.setDuration(morningSession.getDuration() - talk.getDuration());
 
+            }
         }
         scanner.close();
     }

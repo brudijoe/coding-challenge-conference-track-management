@@ -10,6 +10,14 @@ public class Talk {
     private int duration;
 
     /**
+     * Constructor for talk with name and duration only.
+     */
+    public Talk(String name, int duration) {
+        this.name = name;
+        this.duration = duration;
+    }
+
+    /**
      * Constructor for talk.
      */
     public Talk(String startTime, String name, int duration) {
