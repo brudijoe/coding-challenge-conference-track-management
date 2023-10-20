@@ -1,8 +1,8 @@
 package com.github.brudijoe.utils;
 
+import com.github.brudijoe.talk.Talk;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.github.brudijoe.talk.Talk;
 
 /**
  * Utility class for parsing input strings using regular expressions and extracting talk

@@ -1,8 +1,9 @@
 package com.github.brudijoe.utils;
 
+import com.github.brudijoe.talk.Talk;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.github.brudijoe.talk.Talk;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -21,11 +22,12 @@ public class InputParserTest {
     @Test
     public void testParseTalk_ValidInput() {
         String input = "Sample Talk 45min";
+        final int duration = 45;
 
         Talk talk = inputParser.parseTalk(input);
 
         assertEquals("Sample Talk", talk.getName());
-        assertEquals(45, talk.getDuration());
+        assertEquals(duration, talk.getDuration());
     }
 
     @Test
